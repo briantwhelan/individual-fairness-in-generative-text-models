@@ -6,6 +6,7 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+import os
 import argparse
 
 from holistic_bias.src.sentences import HolisticBiasSentenceGenerator
@@ -14,12 +15,8 @@ from holistic_bias.src.util import DEFAULT_DATASET_VERSION
 
 if __name__ == "__main__":
 
+# Path to base dataset folder
     parser = argparse.ArgumentParser("Generate HolisticBias sentences")
-    parser.add_argument(
-        "save_folder",
-        type=str,
-        help="Folder to save CSVs of all noun phrases and base sentences to",
-    )
     parser.add_argument(
         "--dataset-version",
         type=str,
@@ -33,11 +30,14 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    save_folder = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "dataset", args.dataset_version
+    )
     print(
-        f"Instantiating the HolisticBias sentence generator and saving output files to {args.save_folder}."
+        f"Instantiating the HolisticBias sentence generator and saving output files to {save_folder}."
     )
     generator = HolisticBiasSentenceGenerator(
-        save_folder=args.save_folder,
+        save_folder=save_folder,
         dataset_version=args.dataset_version,
         use_small_set=args.use_small_set,
     )
