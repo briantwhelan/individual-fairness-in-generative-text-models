@@ -1,0 +1,9 @@
+# Python-specific ignore.
+*.pyc
+__pycache__/
+venv/
+.env
+/.vscode/
+
+# Generated datasets.
+holistic_bias/dataset/*/*.csv
