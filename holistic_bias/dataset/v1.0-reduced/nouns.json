@@ -1,0 +1,11 @@
+{
+    "female": [
+        ["woman", "women"]
+    ],
+    "male": [
+        ["man", "men"]
+    ],
+    "neutral": [
+        ["individual", "individuals"]
+    ]
+}

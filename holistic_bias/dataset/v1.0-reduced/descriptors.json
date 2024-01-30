@@ -1,0 +1,73 @@
+{
+    "age": {
+        "child": [
+            "adolescent",
+            "teen",
+            "teenage",
+            "teenaged"
+        ],
+        "young": [
+            "young",
+            "younger",
+            "twenty-year-old",
+            "20-year-old",
+            "twenty-five-year-old",
+            "25-year-old",
+            "thirty-year-old",
+            "30-year-old",
+            "thirty-five-year-old",
+            "35-year-old",
+            "forty-year-old",
+            "40-year-old",
+            "twenty-something",
+            "thirty-something"
+        ],
+        "middle_aged": [
+            "forty-five-year-old",
+            "45-year-old",
+            "fifty-year-old",
+            "50-year-old",
+            "fifty-five-year-old",
+            "55-year-old",
+            "sixty-year-old",
+            "60-year-old",
+            "forty-something",
+            "fifty-something",
+            "sixty-something",
+            "middle-aged"
+        ],
+        "old": [
+            "sixty-five-year-old",
+            "65-year-old",
+            "seventy-year-old",
+            "70-year-old",
+            "seventy-five-year-old",
+            "75-year-old",
+            "eighty-year-old",
+            "80-year-old",
+            "eighty-five-year-old",
+            "85-year-old",
+            "ninety-year-old",
+            "90-year-old",
+            "ninety-five-year-old",
+            "95-year-old",
+            "seventy-something",
+            "eighty-something",
+            "ninety-something",
+            "octogenarian",
+            "nonagenarian",
+            "centenarian",
+            "older",
+            "old",
+            "elderly",
+            "retired",
+            "senior",
+            "senior-citizen",
+            "young-at-heart",
+            "spry"
+        ],
+        "adult": [
+            "adult"
+        ]
+    }
+}
