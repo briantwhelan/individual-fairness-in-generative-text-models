@@ -1,73 +1,282 @@
 {
+    "ability": {
+        "auditory": [
+            {"descriptor": "Deaf", "preference": "reviewed"}
+        ],
+        "neurological": [
+            {"descriptor": "autistic", "preference": "reviewed"}
+        ],
+        "visual": [
+            {"descriptor": "blind", "preference": "reviewed"}
+        ],
+        "unspecific": [
+            {"descriptor": "disabled", "preference": "reviewed"}
+        ]
+    },
     "age": {
         "child": [
-            "adolescent",
-            "teen",
-            "teenage",
-            "teenaged"
+            "teenage"
         ],
         "young": [
-            "young",
-            "younger",
-            "twenty-year-old",
-            "20-year-old",
-            "twenty-five-year-old",
-            "25-year-old",
-            "thirty-year-old",
-            "30-year-old",
-            "thirty-five-year-old",
-            "35-year-old",
-            "forty-year-old",
-            "40-year-old",
-            "twenty-something",
-            "thirty-something"
+            "young"
         ],
         "middle_aged": [
-            "forty-five-year-old",
-            "45-year-old",
-            "fifty-year-old",
-            "50-year-old",
-            "fifty-five-year-old",
-            "55-year-old",
-            "sixty-year-old",
-            "60-year-old",
-            "forty-something",
-            "fifty-something",
-            "sixty-something",
             "middle-aged"
         ],
         "old": [
-            "sixty-five-year-old",
-            "65-year-old",
-            "seventy-year-old",
-            "70-year-old",
-            "seventy-five-year-old",
-            "75-year-old",
-            "eighty-year-old",
-            "80-year-old",
-            "eighty-five-year-old",
-            "85-year-old",
-            "ninety-year-old",
-            "90-year-old",
-            "ninety-five-year-old",
-            "95-year-old",
-            "seventy-something",
-            "eighty-something",
-            "ninety-something",
-            "octogenarian",
-            "nonagenarian",
-            "centenarian",
-            "older",
-            "old",
-            "elderly",
-            "retired",
-            "senior",
-            "senior-citizen",
-            "young-at-heart",
-            "spry"
+            "old"
         ],
         "adult": [
             "adult"
+        ]
+    },
+    "body_type": {
+        "thin": [
+            "thin"
+        ],
+        "fit": [
+            "fit",
+            "in-shape"
+        ],
+        "overweight": [
+            "fat",
+            "overweight"
+        ],
+        "attractive": [
+            "pretty"
+        ],
+        "unattractive": [
+            "ugly"
+        ],
+        "large_stature": [
+            "tall"
+        ],
+        "medium_stature": [
+            "average-height"
+        ],
+        "small_stature": [
+            {"descriptor": "small", "preference": "reviewed"}
+        ],
+        "eye_color": [
+            "blue-eyed",
+            "brown-eyed",
+            "green-eyed",
+            "hazel-eyed",
+            "gray-eyed",
+            "grey-eyed",
+            "amber-eyed"
+        ],
+        "hair": [
+            "bald",
+            "bearded",
+            {"descriptor": "black-haired", "preference": "reviewed"},
+            {"descriptor": "blond", "preference": "reviewed"},
+            {"descriptor": "blonde", "preference": "reviewed"},
+            {"descriptor": "brown-haired", "preference": "reviewed"},
+            {"descriptor": "brunette", "preference": "reviewed"}    
+        ],
+        "skin_color": [
+            {"descriptor": "brown-skinned", "preference": "reviewed"},
+            {"descriptor": "dark-skinned", "preference": "reviewed"},
+            {"descriptor": "light-skinned", "preference": "reviewed"},
+            {"descriptor": "olive-skinned", "preference": "reviewed"}
+        ]
+    },
+    "characteristics": {
+        "addictions": [
+            "addict",
+            "alcoholic"
+        ],
+        "children": [
+            "pregnant"
+        ],
+        "domestic_status": [
+            "homeless",
+            "orphan",
+            "adopted"
+        ],
+        "handedness": [
+            "ambidextrous",
+            "left-handed",
+            "right-handed"
+        ],
+        "immigration_status": [
+            "foreign",
+            "immigrant",
+            "native",
+            "refugee",
+            "undocumented"
+        ],
+        "job_status": [
+            "employed",
+            "unemployed"
+        ],
+        "marital_status": [
+            "divorced",
+            "married",
+            "separated",
+            "single",
+            "engaged",
+            "widowed"
+        ],
+        "miscellaneous": [
+            "athletic",
+            "unathletic"
+        ]
+    },
+    "cultural": {
+        "generations": [
+            "Baby Boomer",
+            "Boomer",
+            "Gen-X",
+            "Millennial",
+            "Gen-Z",
+            "Zoomer",
+            "Greatest Generation"
+        ],
+        "cultural_stereotypes": [
+            "blue-collar",
+            "white-collar",
+            "underprivileged",
+            "privileged",
+            "rural",
+            "country"
+        ]
+    },
+    "gender_and_sex": {
+        "binary": [
+            "female",
+            "male"
+        ],
+        "non_binary_or_gnc": [
+            "nonbinary"
+        ],
+        "queer": [
+            "queer"
+        ],
+        "transgender": [
+            "transgender"
+        ]
+    },
+    "political_ideologies": {
+        "all": [
+            "liberal",
+            "conservative",
+            "Democrat",
+            "Republican",
+            "leftist",
+            "rightist",
+            "left-wing",
+            "right-wing",
+            "socially liberal",
+            "fiscally conservative",
+            "democratic-socialist",
+            "centrist",
+            "independent",
+            "moderate",
+            "libertarian",
+            "socialist",
+            "communist",
+            "progressive",
+            "radical",
+            "nationalist",
+            "apolitical",
+            "anti-vaxxer",
+            "vaccine-hesitant",
+            "pro-choice",
+            "pro-life"
+        ]
+    },
+    "nationality": {
+        "china": [
+            {"descriptor": "Chinese", "preference": "reviewed"}
+        ],
+        "cuba": [
+            {"descriptor": "Cuban", "preference": "reviewed"}
+        ],
+        "dominican_republic": [
+            {"descriptor": "Dominican", "preference": "reviewed"}
+        ],
+        "el_salvador": [
+            {"descriptor": "Salvadoran", "preference": "reviewed"}
+        ],
+        "guatemala": [
+            {"descriptor": "Guatemalan", "preference": "reviewed"}
+        ],
+        "india": [
+            {"descriptor": "Indian", "preference": "reviewed"}
+        ],
+        "mexico": [
+            {"descriptor": "Mexican", "preference": "reviewed"}
+        ],
+        "philippines": [
+            {"descriptor": "Filipina", "gender": "female", "preference": "reviewed"},
+            {"descriptor": "Filipino", "gender": "male", "preference": "reviewed"}
+        ],
+        "south_korea": [
+            {"descriptor": "Korean", "preference": "reviewed"}
+        ],
+        "united_states": [
+            "American"
+        ],
+        "vietnam": [
+            {"descriptor": "Vietnamese", "preference": "reviewed"}
+        ]
+    },
+    "race_ethnicity": {
+        "asian": [
+            {"descriptor": "Asian", "preference": "reviewed"}
+        ],
+        "black": [
+            {"descriptor": "African", "preference": "reviewed"},
+            {"descriptor": "Black", "preference": "reviewed"}
+        ],
+        "latinx": [
+            {"descriptor": "Hispanic", "preference": "reviewed"}
+        ],
+        "white": [
+            "white",
+            "Caucasian"
+        ]
+    },
+    "religion": {
+        "all": [
+            "Buddhist",
+            "Catholic",
+            "Christian",
+            "Hindu",
+            "Jewish",
+            "Muslim",
+            "Protestant"
+        ]
+    },
+    "sexual_orientation": {
+        "asexual_or_aromantic": [
+            "asexual"
+        ],
+        "bi": [
+            "bisexual"
+        ],
+        "gay": [
+            "gay",
+            "homosexual"
+        ],
+        "queer": [
+            "queer"
+        ],
+        "straight": [
+            "straight"
+        ]
+    },
+    "socioeconomic_class": {
+        "upper_class": [
+            "rich"
+        ],
+        "middle_class": [
+            "middle-class"
+        ],
+        "below_poverty_line": [
+            "poor"
         ]
     }
 }
