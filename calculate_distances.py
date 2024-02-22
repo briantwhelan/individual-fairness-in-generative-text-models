@@ -99,20 +99,45 @@ def calculate_sentiments(input_text, output_text):
   sentiment_analysis = pipeline(model="lxyuan/distilbert-base-multilingual-cased-sentiments-student", return_all_scores=True)
 
   # Calculate sentiments of inputs and outputs.
+  sentiments = sentiment_analysis(input_text.tolist())
   input_sentiments = []
-  for input in tqdm(input_text):
-    sentiment = sentiment_analysis(input)[0]
-    if sentiment['label'] == 'POSITIVE':
-      input_sentiments.append(sentiment['score'])
-    else:
-      input_sentiments.append(-sentiment['score'])
+  for sentiment in tqdm(sentiments):
+    input_sentiments.append((sentiment[0]['score'], sentiment[1]['score'], sentiment[2]['score']))
+
+  sentiments = sentiment_analysis(output_text.tolist())
   output_sentiments = []
-  for output in tqdm(output_text):
-    sentiment = sentiment_analysis(output)[0]
-    if sentiment['label'] == 'POSITIVE':
-      output_sentiments.append(sentiment['score'])
-    else:
-      output_sentiments.append(-sentiment['score'])
+  for sentiment in tqdm(sentiments):
+    output_sentiments.append((sentiment[0]['score'], sentiment[1]['score'], sentiment[2]['score']))
+  # Alternative approach calculating all sentiments at once.
+  # Doesn't seem to provide much (if any) performance benefit.
+  # sentiments = sentiment_analysis(input_text.tolist())
+  # input_sentiments = []
+  # for sentiment in sentiments:
+  #   if sentiment['label'] == 'POSITIVE':
+  #     input_sentiments.append(sentiment['score'])
+  #   else:
+  #     input_sentiments.append(-sentiment['score'])
+  # sentiments = sentiment_analysis(output_text.tolist())
+  # output_sentiments = []
+  # for sentiment in sentiments:
+  #   if sentiment['label'] == 'POSITIVE':
+  #     output_sentiments.append(sentiment['score'])
+  #   else:
+  #     output_sentiments.append(-sentiment['score'])
+  # input_sentiments = []
+  # for input in tqdm(input_text):
+  #   sentiment = sentiment_analysis(input)[0]
+  #   if sentiment['label'] == 'POSITIVE':
+  #     input_sentiments.append(sentiment['score'])
+  #   else:
+  #     input_sentiments.append(-sentiment['score'])
+  # output_sentiments = []
+  # for output in tqdm(output_text):
+  #   sentiment = sentiment_analysis(output)[0]
+  #   if sentiment['label'] == 'POSITIVE':
+  #     output_sentiments.append(sentiment['score'])
+  #   else:
+  #     output_sentiments.append(-sentiment['score'])
 
   # Ensure lengths of arrays are the same.
   if (len(input_text) != len(output_text) and
