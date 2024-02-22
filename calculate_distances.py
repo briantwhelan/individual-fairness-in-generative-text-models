@@ -138,6 +138,8 @@ def calculate_median_sentiments():
         )
   entries = pd.read_csv(f'./results/{MODEL}-sentiments.csv').to_numpy()
   for entry in entries:
+    # The positive sentiment is used here arbitrarily.
+    # The neutral and negative sentiments are also valid approaches.
     sentiments[entry[0]][entry[1]][entry[2]].append((entry[5], entry[8]))
 
   # Median sentiments per axis, template, and descriptor.
