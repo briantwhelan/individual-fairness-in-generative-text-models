@@ -14,7 +14,7 @@ def load_input_output_pairs():
   Loads input-output pairs from file.
   """
    # Read in input-output pairs.
-  df = pd.read_csv('./results/'+MODEL+'-outputs.csv')
+  df = pd.read_csv(f'./results/{MODEL}-outputs.csv')
   input_text = df['input'].to_numpy()
   output_text = df['output'].to_numpy()
 
@@ -43,10 +43,10 @@ def calculate_perplexities(input_text, output_text):
                     '), output_ppls (', len(output_ppls), ')')
   
   # Append input and output perplexities to file.
-  df = pd.read_csv('./results/'+MODEL+'-outputs.csv')
+  df = pd.read_csv(f'./results/{MODEL}-outputs.csv')
   df['input_ppl'] = input_ppls
   df['output_ppl'] = output_ppls
-  df.to_csv('./results/'+MODEL+'-perplexities.csv', index=False)
+  df.to_csv(f'./results/{MODEL}-perplexities.csv', index=False)
 
 def calculate_median_perplexities():
   """
@@ -56,7 +56,7 @@ def calculate_median_perplexities():
   perplexities = defaultdict(
             lambda: defaultdict(lambda: defaultdict(list))
         )
-  entries = pd.read_csv('./results/'+MODEL+'-perplexities.csv').to_numpy()
+  entries = pd.read_csv(f'./results/{MODEL}-perplexities.csv').to_numpy()
   for entry in entries:
     perplexities[entry[0]][entry[1]][entry[2]].append((entry[5], entry[6]))
 
@@ -71,7 +71,7 @@ def calculate_median_perplexities():
         median_perplexities[axis][template][descriptor] = (np.median(input_ppls), np.median(output_ppls))
 
   # Print median perplexities.
-  with open('./results/'+MODEL+'-median-perplexities.csv', 'w') as f:
+  with open(f'./results/{MODEL}-median-perplexities.csv', 'w') as f:
     f.write(f'{"axis"},{"template"},{"descriptor"},{"median_input_ppl"},{"median_output_ppl"}\n')
     for axis in median_perplexities:
       for template in median_perplexities[axis]:
@@ -81,7 +81,7 @@ def calculate_median_perplexities():
   return median_perplexities
 
 def calculate_perplexity_distances(median_perplexities):
-  with open('./results/'+MODEL+'-perplexity-distances.csv', 'w') as f:
+  with open(f'./results/{MODEL}-perplexity-distances.csv', 'w') as f:
     f.write(f'{"axis"},{"template"},{"descriptor1"},{"descriptor2"},{"input_distance"},{"output_distance"}\n')
     
     for axis in median_perplexities:
@@ -95,7 +95,6 @@ def calculate_sentiments(input_text, output_text):
   """
   Calculates sentiments of input and output texts.
   """
-  # sentiment_analysis = pipeline("sentiment-analysis", model="siebert/sentiment-roberta-large-english")
   sentiment_analysis = pipeline(model="lxyuan/distilbert-base-multilingual-cased-sentiments-student", return_all_scores=True)
 
   # Calculate sentiments of inputs and outputs.
@@ -108,36 +107,6 @@ def calculate_sentiments(input_text, output_text):
   output_sentiments = []
   for sentiment in tqdm(sentiments):
     output_sentiments.append((sentiment[0]['score'], sentiment[1]['score'], sentiment[2]['score']))
-  # Alternative approach calculating all sentiments at once.
-  # Doesn't seem to provide much (if any) performance benefit.
-  # sentiments = sentiment_analysis(input_text.tolist())
-  # input_sentiments = []
-  # for sentiment in sentiments:
-  #   if sentiment['label'] == 'POSITIVE':
-  #     input_sentiments.append(sentiment['score'])
-  #   else:
-  #     input_sentiments.append(-sentiment['score'])
-  # sentiments = sentiment_analysis(output_text.tolist())
-  # output_sentiments = []
-  # for sentiment in sentiments:
-  #   if sentiment['label'] == 'POSITIVE':
-  #     output_sentiments.append(sentiment['score'])
-  #   else:
-  #     output_sentiments.append(-sentiment['score'])
-  # input_sentiments = []
-  # for input in tqdm(input_text):
-  #   sentiment = sentiment_analysis(input)[0]
-  #   if sentiment['label'] == 'POSITIVE':
-  #     input_sentiments.append(sentiment['score'])
-  #   else:
-  #     input_sentiments.append(-sentiment['score'])
-  # output_sentiments = []
-  # for output in tqdm(output_text):
-  #   sentiment = sentiment_analysis(output)[0]
-  #   if sentiment['label'] == 'POSITIVE':
-  #     output_sentiments.append(sentiment['score'])
-  #   else:
-  #     output_sentiments.append(-sentiment['score'])
 
   # Ensure lengths of arrays are the same.
   if (len(input_text) != len(output_text) and
@@ -150,9 +119,15 @@ def calculate_sentiments(input_text, output_text):
 
   # Append input and output sentiments to file.
   df = pd.read_csv('./results/'+MODEL+'-outputs.csv')
-  df['input_sentiment'] = input_sentiments
-  df['output_sentiment'] = output_sentiments
-  df.to_csv('./results/'+MODEL+'-sentiments.csv', index=False)
+  pos, neu, neg = zip(*input_sentiments)
+  df['input_sentiment_pos'] = pos
+  df['input_sentiment_neu'] = neu
+  df['input_sentiment_neg'] = neg
+  pos, neu, neg = zip(*output_sentiments)
+  df['output_sentiment_pos'] = pos
+  df['output_sentiment_neu'] = neu
+  df['output_sentiment_neg'] = neg
+  df.to_csv(f'./results/{MODEL}-sentiments.csv', index=False)
 
 def calculate_median_sentiments():
   """
@@ -161,9 +136,9 @@ def calculate_median_sentiments():
   sentiments = defaultdict(
             lambda: defaultdict(lambda: defaultdict(list))
         )
-  entries = pd.read_csv('./results/'+MODEL+'-sentiments.csv').to_numpy()
+  entries = pd.read_csv(f'./results/{MODEL}-sentiments.csv').to_numpy()
   for entry in entries:
-    sentiments[entry[0]][entry[1]][entry[2]].append((entry[5], entry[6]))
+    sentiments[entry[0]][entry[1]][entry[2]].append((entry[5], entry[8]))
 
   # Median sentiments per axis, template, and descriptor.
   median_sentiments = defaultdict(
@@ -176,7 +151,7 @@ def calculate_median_sentiments():
         median_sentiments[axis][template][descriptor] = (np.median(input_sentiments), np.median(output_sentiments))
 
   # Print median sentiments.
-  with open('./results/'+MODEL+'-median-sentiments.csv', 'w') as f:
+  with open(f'./results/{MODEL}-median-sentiments.csv', 'w') as f:
     f.write(f'{"axis"},{"template"},{"descriptor"},{"median_input_sentiment"},{"median_output_sentiment"}\n')
     for axis in median_sentiments:
       for template in median_sentiments[axis]:
@@ -186,7 +161,7 @@ def calculate_median_sentiments():
   return median_sentiments
 
 def calculate_sentiment_distances(median_sentiments):
-  with open('./results/'+MODEL+'-sentiment-distances.csv', 'w') as f:
+  with open(f'./results/{MODEL}-sentiment-distances.csv', 'w') as f:
     f.write(f'{"axis"},{"template"},{"descriptor1"},{"descriptor2"},{"input_distance"},{"output_distance"}\n')
     
     for axis in median_sentiments:
