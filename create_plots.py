@@ -37,7 +37,8 @@ def calculate_fairness_frequencies(method, metric):
         input_distance = entry[4]
         output_distance = entry[5]
         if method == 'output-only':
-            if (output_distance > 30 and metric == 'perplexity' or
+            if (MODEL == 'gpt2' and output_distance > 30 and metric == 'perplexity' or
+            MODEL == 'blenderbot' and output_distance > 25 and metric == 'perplexity' or
             output_distance > 0.2 and metric == 'sentiment'):
                 fairness_freqs[axis][template][descriptor1].append(descriptor2)
                 fairness_freqs[axis][template][descriptor2].append(descriptor1)
@@ -94,13 +95,13 @@ if __name__ == '__main__':
                 # Create a bar chart for each template.
                 descriptors = filtered_df['descriptor'].to_numpy()
                 difference_counts = filtered_df['difference_count'].to_numpy()
-                fig = plt.figure(figsize = (10, 5))
-                plt.bar(descriptors[0:len(descriptors)], difference_counts[0:len(difference_counts)], color ='blue', width = 0.4)
-                x_label_steps = len(descriptors)//10
-                plt.xticks(descriptors[::x_label_steps], rotation=25, fontsize=6)
+                fig = plt.figure(figsize = (5, 5))
+                plt.ylim(0, 150)
+                plt.xticks([], [])
+                plt.bar(descriptors[0:len(descriptors)], sorted(difference_counts[0:len(difference_counts)]), width=1, color ='blue')
                 plt.ylabel(f"Distance difference count (w.r.t. {metric})")
-                plt.xlabel("Descriptors")
-                plt.title(f"{metric} distance differences across descriptors for '{template}' template (w.r.t. {method})")
+                plt.xlabel("Descriptors (sorted by difference count)")
+                plt.title(f"{metric} distance differences across descriptors\nfor '{template}' template\n(w.r.t. {method})")
                 plt.savefig(f'./evaluation/{MODEL}/barcharts/{method}/{MODEL}-{method}-{metric}-{template}-barchart.png')
 
                 # Create a word cloud for each template.
