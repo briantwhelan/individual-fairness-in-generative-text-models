@@ -13,6 +13,7 @@ AXIS_COLOURS = {
     'cultural': '#3cb44b', # green
     'gender_and_sex': '#42d4f4', # cyan
     'nationality': '#ffe119', # yellow
+    'nonce': '#808080', # grey
     'political_ideologies': '#911eb4', # purple
     'race_ethnicity': '#f032e6', # magenta
     'religion': '#469990', # teal
