@@ -3,7 +3,8 @@ from matplotlib import pyplot as plt
 from collections import defaultdict
 from wordcloud import WordCloud
 
-MODEL = 'gpt2'
+# Model data to plot.
+MODEL = 'gpt2' # or 'blenderbot'
 
 AXIS_COLOURS = {
     'ability': '#bfef45', # lime
@@ -22,7 +23,7 @@ AXIS_COLOURS = {
 }
 
 def calculate_fairness_frequencies(method, metric):
-    df = pd.read_csv(f'./results/{MODEL}-{metric}-distances.csv')
+    df = pd.read_csv(f'./results/{MODEL}/{MODEL}-{metric}-distances.csv')
     # Fairness frequencies per axis, template, and descriptor.
     fairness_freqs = defaultdict(
         lambda: defaultdict(lambda: defaultdict(list))
@@ -47,7 +48,7 @@ def calculate_fairness_frequencies(method, metric):
     return fairness_freqs
 
 def write_fairness_frequencies(fairness_freqs, method, metric):
-    with open(f'./results/{MODEL}-{method}-{metric}-results.csv', 'w') as f:
+    with open(f'./results/{MODEL}/{MODEL}-{method}-{metric}-results.csv', 'w') as f:
         f.write(f'{"axis"},{"template"},{"descriptor"},{"difference_count"},\n')
         for axis in fairness_freqs:
             for template in fairness_freqs[axis]:
@@ -81,14 +82,14 @@ if __name__ == '__main__':
             write_fairness_frequencies(fairness_freqs, method, metric)
 
             # Split results per template.
-            df = pd.read_csv(f'./results/{MODEL}-{method}-{metric}-results.csv')
+            df = pd.read_csv(f'./results/{MODEL}/{MODEL}-{method}-{metric}-results.csv')
             templates = df['template'].unique()
             templates = templates.tolist()
             for template in templates:
                 filtered_df = df.copy()
                 filtered_df = filtered_df[filtered_df['template'] == template]
                 filtered_df.sort_values(by=['difference_count'], inplace=True)
-                filtered_df.to_csv(f'./evaluation/{MODEL}-{method}-{metric}-{template}-differences.csv', index=False)
+                filtered_df.to_csv(f'./evaluation/{MODEL}/differences/{method}/{MODEL}-{method}-{metric}-{template}-differences.csv', index=False)
 
                 # Create a bar chart for each template.
                 descriptors = filtered_df['descriptor'].to_numpy()
@@ -100,7 +101,7 @@ if __name__ == '__main__':
                 plt.ylabel(f"Distance difference count (w.r.t. {metric})")
                 plt.xlabel("Descriptors")
                 plt.title(f"{metric} distance differences across descriptors for '{template}' template (w.r.t. {method})")
-                plt.savefig(f'./evaluation/{MODEL}-{method}-{metric}-{template}-barchart.png')
+                plt.savefig(f'./evaluation/{MODEL}/barcharts/{method}/{MODEL}-{method}-{metric}-{template}-barchart.png')
 
                 # Create a word cloud for each template.
                 freqs = filtered_df[['descriptor', 'difference_count']]
@@ -111,4 +112,4 @@ if __name__ == '__main__':
 
                 wc = WordCloud(background_color="white", width=1000,height=1000,relative_scaling=0.5,normalize_plurals=False, color_func=get_axis_color, random_state=1).generate_from_frequencies(dictionary)
                 plt.axis("off")
-                wc.to_file(f'./evaluation/{MODEL}-{method}-{metric}-{template}-wordcloud.png')            
+                wc.to_file(f'./evaluation/{MODEL}/wordclouds/{method}/{MODEL}-{method}-{metric}-{template}-wordcloud.png')            

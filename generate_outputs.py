@@ -2,12 +2,8 @@ import pandas as pd
 from tqdm import tqdm
 from transformers import pipeline
 
-# Replace with arguments from command line.
+# Model to use for generating outputs.
 MODEL = 'gpt2' # or 'blenderbot'
-
-# Models.
-GPT2_MODEL = 'gpt2'
-BLENDERBOT_MODEL = 'blenderbot'
 
 # Holistic bias sentence indexes.
 TEXT_INDEX = 0
@@ -22,7 +18,7 @@ def load_inputs():
   Loads input prompts from dataset.
   """
   # Load dataset.
-  data = pd.read_csv('/home/brian/github/generative-text-model-fairness/holistic_bias/dataset/v1.0-reduced/sentences.csv')
+  data = pd.read_csv('./holistic_bias/dataset/v1.0-reduced/sentences.csv')
 
   # Convert to numpy array.
   sentences = data.to_numpy()
@@ -66,7 +62,7 @@ if __name__ == '__main__':
   inputs = load_inputs()
 
   # Generate outputs for each input prompt.
-  with open('./results/'+MODEL+'-outputs.csv', 'w') as f:
+  with open(f'./results/{MODEL}/{MODEL}-outputs.csv', 'w') as f:
     f.write(f'{"axis"},{"template"},{"descriptor"},{"input"},{"output"}\n')
     for input in tqdm(inputs):
       text = input[TEXT_INDEX]
