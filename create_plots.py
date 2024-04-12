@@ -74,7 +74,9 @@ if __name__ == '__main__':
     df = pd.read_csv(f'./holistic_bias/dataset/v1.0-reduced/sentences.csv')
     df  = df[['axis', 'descriptor']].drop_duplicates()
     for _, row in df.iterrows():
-        descriptor_to_axis[row['descriptor']] = row['axis']
+        # Some descriptors exist in multiple axes so the first axis is chosen when graphing bar charts.
+        # if row['descriptor'] not in descriptor_to_axis:
+            descriptor_to_axis[row['descriptor']] = row['axis']
 
     for method in ['input-output', 'output-only']:
         for metric in ['perplexity', 'sentiment']:
@@ -89,7 +91,6 @@ if __name__ == '__main__':
             for template in templates:
                 filtered_df = df.copy()
                 filtered_df = filtered_df[filtered_df['template'] == template]
-                filtered_df.sort_values(by=['difference_count'], inplace=True)
                 filtered_df.to_csv(f'./evaluation/{MODEL}/differences/{method}/{MODEL}-{method}-{metric}-{template}-differences.csv', index=False)
 
                 # Create a bar chart for each template.
@@ -98,10 +99,12 @@ if __name__ == '__main__':
                 fig = plt.figure(figsize = (5, 5))
                 plt.ylim(0, 150)
                 plt.xticks([], [])
-                plt.bar(descriptors[0:len(descriptors)], sorted(difference_counts[0:len(difference_counts)]), width=1, color ='blue')
+                barchart = plt.bar(descriptors, difference_counts, width=1)
+                for i, d in enumerate(descriptors):
+                    barchart[i].set_color(get_axis_color(d))
                 plt.ylabel(f"Distance difference count (w.r.t. {metric})")
-                plt.xlabel("Descriptors (sorted by difference count)")
-                plt.title(f"{metric} distance differences across descriptors\nfor '{template}' template\n(w.r.t. {method})")
+                plt.xlabel("Descriptors coloured by demographic axis")
+                plt.title(f"{metric} distance distribution across descriptors for\n'{template}' template (w.r.t. {method})")
                 plt.savefig(f'./evaluation/{MODEL}/barcharts/{method}/{MODEL}-{method}-{metric}-{template}-barchart.png')
 
                 # Create a word cloud for each template.
