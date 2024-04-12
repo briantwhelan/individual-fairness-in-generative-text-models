@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import numpy as np
 from collections import defaultdict
@@ -7,7 +8,7 @@ from evaluate import load
 from transformers import pipeline
 
 # Replace with arguments from command line.
-MODEL = 'gpt2' # or 'dialogpt' or 'blenderbot'
+MODEL = 'gpt2' # or 'blenderbot'
 
 def load_input_output_pairs():
   """
@@ -31,8 +32,9 @@ def calculate_perplexities(input_text, output_text):
   perplexity = load('perplexity', module_type='metric')
 
   # Calculate perplexities of inputs and outputs.
-  input_ppls = perplexity.compute(predictions=input_text, model_id='gpt2')["perplexities"]
-  output_ppls = perplexity.compute(predictions=output_text, model_id='gpt2')["perplexities"]
+  model_id = 'gpt2' if MODEL == 'gpt2' else 'facebook/blenderbot-3B'
+  input_ppls = perplexity.compute(predictions=input_text, model_id=model_id)["perplexities"]
+  output_ppls = perplexity.compute(predictions=output_text, model_id=model_id)["perplexities"]
 
   # Ensure lengths of arrays are the same.
   if (len(input_text) != len(output_text) and
@@ -98,14 +100,18 @@ def calculate_sentiments(input_text, output_text):
   sentiment_analysis = pipeline(model="lxyuan/distilbert-base-multilingual-cased-sentiments-student", return_all_scores=True)
 
   # Calculate sentiments of inputs and outputs.
+  start = time.time()
   sentiments = sentiment_analysis(input_text.tolist())
+  print("Time taken to calculate input sentiments: ", time.time() - start)
   input_sentiments = []
-  for sentiment in tqdm(sentiments):
+  for sentiment in sentiments:
     input_sentiments.append((sentiment[0]['score'], sentiment[1]['score'], sentiment[2]['score']))
 
+  start = time.time()
   sentiments = sentiment_analysis(output_text.tolist())
+  print("Time taken to calculate output sentiments: ", time.time() - start)
   output_sentiments = []
-  for sentiment in tqdm(sentiments):
+  for sentiment in sentiments:
     output_sentiments.append((sentiment[0]['score'], sentiment[1]['score'], sentiment[2]['score']))
 
   # Ensure lengths of arrays are the same.
