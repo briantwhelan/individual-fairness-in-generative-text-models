@@ -70,7 +70,9 @@ if __name__ == '__main__':
     df = pd.read_csv(f'./holistic_bias/dataset/v1.0-reduced/sentences.csv')
     df  = df[['axis', 'descriptor']].drop_duplicates()
     for _, row in df.iterrows():
-        # Some descriptors exist in multiple axes so the first axis is chosen when graphing bar charts.
+        # Some descriptors exist in multiple axes (only 4) and
+        # so the first axis is associated with the descriptor
+        # for graph purposes.
         if row['descriptor'] not in descriptor_to_axis:
             descriptor_to_axis[row['descriptor']] = row['axis']
 
@@ -115,4 +117,4 @@ if __name__ == '__main__':
 
                 wc = WordCloud(background_color="white", width=1000,height=1000,relative_scaling=0.5,normalize_plurals=False, color_func=get_axis_color, random_state=1).generate_from_frequencies(dictionary)
                 plt.axis("off")
-                wc.to_file(f'./evaluation/{MODEL}/wordclouds/{method}/{MODEL}-{method}-{metric}-{template}-wordcloud.png')            
+                wc.to_file(f'./evaluation/{MODEL}/wordclouds/{method}/{MODEL}-{method}-{metric}-{template}-wordcloud.png')    
