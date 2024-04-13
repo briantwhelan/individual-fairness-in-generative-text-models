@@ -54,44 +54,37 @@ def calculate_median_perplexities():
   """
   Calculates median perplexities of input and output texts.
   """
-  # Perplexity dict indexed by axis, template, and descriptor.
-  perplexities = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(list))
-        )
+  # Perplexity dict indexed by template and descriptor.
+  perplexities = defaultdict(lambda: defaultdict(list))
   entries = pd.read_csv(f'./results/{MODEL}/{MODEL}-perplexities.csv').to_numpy()
   for entry in entries:
-    perplexities[entry[0]][entry[1]][entry[2]].append((entry[5], entry[6]))
+    perplexities[entry[1]][entry[2]].append((entry[5], entry[6]))
 
-  # Median perplexities per axis, template, and descriptor.
-  median_perplexities = defaultdict(
-              lambda: defaultdict(lambda: defaultdict(list))
-          )
-  for axis in perplexities:
-    for template in perplexities[axis]:
-      for descriptor in perplexities[axis][template]:
-        input_ppls, output_ppls = zip(*perplexities[axis][template][descriptor])
-        median_perplexities[axis][template][descriptor] = (np.median(input_ppls), np.median(output_ppls))
+  # Median perplexities per template and descriptor.
+  median_perplexities = defaultdict(lambda: defaultdict(list))
+  for template in perplexities:
+    for descriptor in perplexities[template]:
+      input_ppls, output_ppls = zip(*perplexities[template][descriptor])
+      median_perplexities[template][descriptor] = (np.median(input_ppls), np.median(output_ppls))
 
   # Print median perplexities.
   with open(f'./results/{MODEL}/{MODEL}-median-perplexities.csv', 'w') as f:
-    f.write(f'{"axis"},{"template"},{"descriptor"},{"median_input_ppl"},{"median_output_ppl"}\n')
-    for axis in median_perplexities:
-      for template in median_perplexities[axis]:
-        for descriptor in median_perplexities[axis][template]:
-          input_ppl, output_ppl = median_perplexities[axis][template][descriptor]
-          f.write(f'{axis},{template},{descriptor},{input_ppl},{output_ppl}\n')
+    f.write(f'{"template"},{"descriptor"},{"median_input_ppl"},{"median_output_ppl"}\n')
+    for template in median_perplexities:
+      for descriptor in median_perplexities[template]:
+        input_ppl, output_ppl = median_perplexities[template][descriptor]
+        f.write(f'{template},{descriptor},{input_ppl},{output_ppl}\n')
   return median_perplexities
 
 def calculate_perplexity_distances(median_perplexities):
   with open(f'./results/{MODEL}/{MODEL}-perplexity-distances.csv', 'w') as f:
-    f.write(f'{"axis"},{"template"},{"descriptor1"},{"descriptor2"},{"input_distance"},{"output_distance"}\n')
+    f.write(f'{"template"},{"descriptor1"},{"descriptor2"},{"input_distance"},{"output_distance"}\n')
     
-    for axis in median_perplexities:
-      for template in median_perplexities[axis]:
-        for descriptor1, descriptor2 in combinations(median_perplexities[axis][template], r=2):
-          input_distance = abs(median_perplexities[axis][template][descriptor1][0] - median_perplexities[axis][template][descriptor2][0])
-          output_distance = abs(median_perplexities[axis][template][descriptor1][1] - median_perplexities[axis][template][descriptor2][1])
-          f.write(f'{axis},{template},{descriptor1},{descriptor2},{input_distance},{output_distance}\n')
+    for template in median_perplexities:
+      for descriptor1, descriptor2 in combinations(median_perplexities[template], r=2):
+        input_distance = abs(median_perplexities[template][descriptor1][0] - median_perplexities[template][descriptor2][0])
+        output_distance = abs(median_perplexities[template][descriptor1][1] - median_perplexities[template][descriptor2][1])
+        f.write(f'{template},{descriptor1},{descriptor2},{input_distance},{output_distance}\n')
 
 def calculate_sentiments(input_text, output_text):
   """
@@ -139,45 +132,38 @@ def calculate_median_sentiments():
   """
   Calculates median sentiments of input and output texts.
   """
-  sentiments = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(list))
-        )
+  # Sentiment dict indexed by template and descriptor
+  sentiments = defaultdict((lambda: defaultdict(list)))
   entries = pd.read_csv(f'./results/{MODEL}/{MODEL}-sentiments.csv').to_numpy()
   for entry in entries:
     # The positive sentiment is used here arbitrarily.
     # The neutral and negative sentiments are also valid approaches.
-    sentiments[entry[0]][entry[1]][entry[2]].append((entry[5], entry[8]))
+    sentiments[entry[1]][entry[2]].append((entry[5], entry[8]))
 
-  # Median sentiments per axis, template, and descriptor.
-  median_sentiments = defaultdict(
-              lambda: defaultdict(lambda: defaultdict(list))
-          )
-  for axis in sentiments:
-    for template in sentiments[axis]:
-      for descriptor in sentiments[axis][template]:
-        input_sentiments, output_sentiments = zip(*sentiments[axis][template][descriptor])
-        median_sentiments[axis][template][descriptor] = (np.median(input_sentiments), np.median(output_sentiments))
+  # Median sentiments per template and descriptor.
+  median_sentiments = defaultdict(lambda: defaultdict(list))
+  for template in sentiments:
+    for descriptor in sentiments[template]:
+      input_sentiments, output_sentiments = zip(*sentiments[template][descriptor])
+      median_sentiments[template][descriptor] = (np.median(input_sentiments), np.median(output_sentiments))
 
   # Print median sentiments.
   with open(f'./results/{MODEL}/{MODEL}-median-sentiments.csv', 'w') as f:
-    f.write(f'{"axis"},{"template"},{"descriptor"},{"median_input_sentiment"},{"median_output_sentiment"}\n')
-    for axis in median_sentiments:
-      for template in median_sentiments[axis]:
-        for descriptor in median_sentiments[axis][template]:
-          input_sentiment, output_sentiment = median_sentiments[axis][template][descriptor]
-          f.write(f'{axis},{template},{descriptor},{input_sentiment},{output_sentiment}\n')
+    f.write(f'{"template"},{"descriptor"},{"median_input_sentiment"},{"median_output_sentiment"}\n')
+    for template in median_sentiments:
+      for descriptor in median_sentiments[template]:
+        input_sentiment, output_sentiment = median_sentiments[template][descriptor]
+        f.write(f'{template},{descriptor},{input_sentiment},{output_sentiment}\n')
   return median_sentiments
 
 def calculate_sentiment_distances(median_sentiments):
   with open(f'./results/{MODEL}/{MODEL}-sentiment-distances.csv', 'w') as f:
-    f.write(f'{"axis"},{"template"},{"descriptor1"},{"descriptor2"},{"input_distance"},{"output_distance"}\n')
-    
-    for axis in median_sentiments:
-      for template in median_sentiments[axis]:
-        for descriptor1, descriptor2 in combinations(median_sentiments[axis][template], r=2):
-          input_distance = abs(median_sentiments[axis][template][descriptor1][0] - median_sentiments[axis][template][descriptor2][0])
-          output_distance = abs(median_sentiments[axis][template][descriptor1][1] - median_sentiments[axis][template][descriptor2][1])
-          f.write(f'{axis},{template},{descriptor1},{descriptor2},{input_distance},{output_distance}\n')
+    f.write(f'{"template"},{"descriptor1"},{"descriptor2"},{"input_distance"},{"output_distance"}\n')
+    for template in median_sentiments:
+      for descriptor1, descriptor2 in combinations(median_sentiments[template], r=2):
+        input_distance = abs(median_sentiments[template][descriptor1][0] - median_sentiments[template][descriptor2][0])
+        output_distance = abs(median_sentiments[template][descriptor1][1] - median_sentiments[template][descriptor2][1])
+        f.write(f'{template},{descriptor1},{descriptor2},{input_distance},{output_distance}\n')
 
 if __name__ == '__main__':
     input_text, output_text = load_input_output_pairs()

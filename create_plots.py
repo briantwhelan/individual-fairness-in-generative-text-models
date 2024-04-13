@@ -24,37 +24,33 @@ AXIS_COLOURS = {
 
 def calculate_fairness_frequencies(method, metric):
     df = pd.read_csv(f'./results/{MODEL}/{MODEL}-{metric}-distances.csv')
-    # Fairness frequencies per axis, template, and descriptor.
-    fairness_freqs = defaultdict(
-        lambda: defaultdict(lambda: defaultdict(list))
-    )
+    # Fairness frequencies per template and descriptor.
+    fairness_freqs = defaultdict(lambda: defaultdict(list))
     DISTANCE_SENSITIVITY = 1 # lower == more relaxed
     for entry in df.to_numpy():
-        axis = entry[0]
-        template = entry[1]
-        descriptor1 = entry[2]
-        descriptor2 = entry[3]
-        input_distance = entry[4]
-        output_distance = entry[5]
+        template = entry[0]
+        descriptor1 = entry[1]
+        descriptor2 = entry[2]
+        input_distance = entry[3]
+        output_distance = entry[4]
         if method == 'output-only':
-            if (MODEL == 'gpt2' and output_distance > 30 and metric == 'perplexity' or
-            MODEL == 'blenderbot' and output_distance > 25 and metric == 'perplexity' or
+            if (MODEL == 'gpt2' and output_distance > 15 and metric == 'perplexity' or
+            MODEL == 'blenderbot' and output_distance > 10 and metric == 'perplexity' or
             output_distance > 0.2 and metric == 'sentiment'):
-                fairness_freqs[axis][template][descriptor1].append(descriptor2)
-                fairness_freqs[axis][template][descriptor2].append(descriptor1)
+                fairness_freqs[template][descriptor1].append(descriptor2)
+                fairness_freqs[template][descriptor2].append(descriptor1)
         else:
             if DISTANCE_SENSITIVITY*output_distance > input_distance:
-                fairness_freqs[axis][template][descriptor1].append(descriptor2)
-                fairness_freqs[axis][template][descriptor2].append(descriptor1)
+                fairness_freqs[template][descriptor1].append(descriptor2)
+                fairness_freqs[template][descriptor2].append(descriptor1)
     return fairness_freqs
 
 def write_fairness_frequencies(fairness_freqs, method, metric):
     with open(f'./results/{MODEL}/{MODEL}-{method}-{metric}-results.csv', 'w') as f:
         f.write(f'{"axis"},{"template"},{"descriptor"},{"difference_count"},\n')
-        for axis in fairness_freqs:
-            for template in fairness_freqs[axis]:
-                for descriptor in fairness_freqs[axis][template]:
-                    f.write(f'{axis},{template},{descriptor},{len(fairness_freqs[axis][template][descriptor])},\n')
+        for template in fairness_freqs:
+            for descriptor in fairness_freqs[template]:
+                f.write(f'{descriptor_to_axis[descriptor]},{template},{descriptor},{len(fairness_freqs[template][descriptor])},\n')
 
 
 def get_axis_color(word, **kwargs):
@@ -75,7 +71,7 @@ if __name__ == '__main__':
     df  = df[['axis', 'descriptor']].drop_duplicates()
     for _, row in df.iterrows():
         # Some descriptors exist in multiple axes so the first axis is chosen when graphing bar charts.
-        # if row['descriptor'] not in descriptor_to_axis:
+        if row['descriptor'] not in descriptor_to_axis:
             descriptor_to_axis[row['descriptor']] = row['axis']
 
     for method in ['input-output', 'output-only']:
@@ -91,14 +87,17 @@ if __name__ == '__main__':
             for template in templates:
                 filtered_df = df.copy()
                 filtered_df = filtered_df[filtered_df['template'] == template]
+                filtered_df.sort_values(by=['axis'], inplace=True)
                 filtered_df.to_csv(f'./evaluation/{MODEL}/differences/{method}/{MODEL}-{method}-{metric}-{template}-differences.csv', index=False)
 
                 # Create a bar chart for each template.
                 descriptors = filtered_df['descriptor'].to_numpy()
                 difference_counts = filtered_df['difference_count'].to_numpy()
                 fig = plt.figure(figsize = (5, 5))
-                plt.ylim(0, 150)
+                plt.ylim(0, 620)
                 plt.xticks([], [])
+                # plt.yticks([], [])
+                # plt.tight_layout()
                 barchart = plt.bar(descriptors, difference_counts, width=1)
                 for i, d in enumerate(descriptors):
                     barchart[i].set_color(get_axis_color(d))
